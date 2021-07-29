@@ -49,6 +49,7 @@
 #define TWO_POW(n)		((double)(1ULL<<(n)))
 
 #include "rtl-sdr.h"
+#include "kerberos-sdr.h"
 #include "tuner_e4k.h"
 #include "tuner_fc0012.h"
 #include "tuner_fc0013.h"
@@ -116,6 +117,8 @@ struct rtlsdr_dev {
 	uint32_t freq; /* Hz */
 	uint32_t bw;
 	uint32_t offs_freq; /* Hz */
+        uint32_t sample_offsets[4];
+        float phase_offsets[4];
 	int corr; /* ppm */
 	int gain; /* tenth dB */
 	struct e4k_state e4k_s;
@@ -2025,3 +2028,25 @@ int rtlsdr_set_bias_tee(rtlsdr_dev_t *dev, int on)
 
 	return 0;
 }
+
+int kerberossdr_set_internal_noise(rtlsdr_dev_t *dev, int enable) {
+  return rtlsdr_set_gpio_bit(dev, enable, 0);
+}
+
+int kerberossdr_calibrate_iq(rtlsdr_dev_t *dev) {
+  kerberossdr_set_internal_noise(dev, 1);
+  kerberossdr_set_internal_noise(dev, 0);
+
+}
+
+int kerberossdr_sample_sync(rtlsdr_dev_t *dev) {
+  kerberossdr_set_internal_noise(dev, 1);
+  kerberossdr_set_internal_noise(dev, 0);
+}
+
+
+
+/*
+  todo: need to figure out how to do sample offsets
+
+ */

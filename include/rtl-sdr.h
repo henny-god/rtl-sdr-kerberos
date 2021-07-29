@@ -405,7 +405,6 @@ RTLSDR_API int rtlsdr_set_bias_tee(rtlsdr_dev_t *dev, int on);
 
 RTLSDR_API int rtlsdr_set_gpio(rtlsdr_dev_t *dev, int on, int gpio);
 
-
 #ifdef __cplusplus
 }
 #endif

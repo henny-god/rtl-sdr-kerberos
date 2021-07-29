@@ -32,6 +32,7 @@
 #endif
 
 #include "rtl-sdr.h"
+#include "kerberos-sdr.h>
 #include "convenience/convenience.h"
 
 #define DEFAULT_SAMPLE_RATE		2048000
@@ -55,6 +56,7 @@ void usage(void)
 		"\t[-b output_block_size (default: 16 * 16384)]\n"
 		"\t[-n number of samples to read (default: 0, infinite)]\n"
 		"\t[-S force sync output (default: async)]\n"
+		"\t[-q sample sync and calibrate iq]\n"
 		"\tfilename (a '-' dumps samples to stdout)\n\n");
 	exit(1);
 }
@@ -113,6 +115,7 @@ int main(int argc, char **argv)
 	int gain = 0;
 	int ppm_error = 0;
 	int sync_mode = 0;
+	int channel_sync = 0;
 	FILE *file;
 	uint8_t *buffer;
 	int dev_index = 0;
@@ -148,6 +151,9 @@ int main(int argc, char **argv)
 		case 'S':
 			sync_mode = 1;
 			break;
+		case 'q':
+		  channel_sync = 1;
+		  break;
 		default:
 			usage();
 			break;
@@ -261,6 +267,12 @@ int main(int argc, char **argv)
 		fprintf(stderr, "Reading samples in async mode...\n");
 		r = rtlsdr_read_async(dev, rtlsdr_callback, (void *)file,
 				      0, out_block_size);
+	}
+
+	if(channel_sync) {
+	  rtlsdr_sample_sync(dev);
+	  rtlsdr_calibrate_iq(dev);
+
 	}
 
 	if (do_exit)
