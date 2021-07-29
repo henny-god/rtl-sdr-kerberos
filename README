@@ -1,6 +1,12 @@
-rtl-sdr
+rtl-sdr-kerberos
 turns your Realtek RTL2832 based DVB dongle into a SDR receiver
 ======================================================================
+
+This specific branch adds features that are available in Tamas Peto's
+demo project to the kerberossdr driver. Currently, those are just
+sample-sync and iq calibration. It's intended to be used for more
+modular/customized setups that don't want to run some of the overhead
+in that project.
 
 For more information see:
 https://osmocom.org/projects/rtl-sdr/wiki
